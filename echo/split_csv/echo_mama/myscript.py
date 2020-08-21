@@ -24,7 +24,8 @@ def get_forms_in_dict():
     forms = dicts['Form Name'].unique().tolist()
     return forms[1:]
 def generate_csvs():
-    visits = ['V0','V1','V2','V3','PRO']
+    visits = ['V0','V3','PRO']
+    #visits = ['V1','V2']
     for visit in visits:
         print(visit)
         with open('Export'+visit+'ECHO mama_DATA_2020-08-12_ZRP.csv','r') as data:

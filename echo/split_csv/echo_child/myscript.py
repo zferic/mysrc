@@ -39,11 +39,11 @@ def get_forms_in_dict():
     #print(forms)
     return forms[1:]
 def generate_csvs():
-    #visits = ['C5','C6','C7','C9','C10','C11','C13']
-    visits = ['C4','C8']
+    #visits = ['C6','C9','C10','C12','C13']
+    visits = ['C4','C5','C7','C8','C11']
     for visit in visits:
         print(visit)
-        with open('Export_ECHOEarlyChildhood-'+visit+'_DATA_2020-06-26_ZRP.csv','r') as data:
+        with open('Export'+visit+'_DATA_2020-08-18_ZRP.csv','r') as data:
             csv_reader = csv.DictReader(data)
             headers = next(csv_reader,None)
             completes = [x for x in headers if 'complete' in x]
@@ -52,12 +52,15 @@ def generate_csvs():
             forms = [x.rsplit('_',1)[0] for x in completes]
             print(abrv,forms,len(abrv),len(forms))
             for i,form_name in enumerate(abrv):
-                with open('Export_ECHOEarlyChildhood-'+visit+'_DATA_2020-06-26_ZRP.csv','r') as data:
+                with open('Export'+visit+'_DATA_2020-08-18_ZRP.csv','r') as data:
                     csv_reader = csv.DictReader(data)
-                    if form_name == 'cesd2_c' or form_name == 'essi2_c':
-                        continue
                     with open(visit+'/'+forms[i+1] + '.csv','w') as new_file:
-                        fieldnames = ['\ufeffcrece_id','redcap_event_name'] + [header for header in headers if form_name in header]
+                        if form_name == 'essi2_c':
+                            fieldnames = ['\ufeffcrece_id','redcap_event_name'] + ['support1', 'support2', 'support3', 'support4', 'support5', 'support6','essi2_pin','essi2_c_formdt','essi2_c_respondent','essi2_c_otherresp','essi2_complete']
+                        elif form_name == 'cesd2_c':
+                            fieldnames = ['\ufeffcrece_id','redcap_event_name'] + ['depression1', 'depression2', 'depression3', 'depression4', 'depression5', 'depression6', 'depression7', 'depression8', 'depression9', 'depression10', 'depression11', 'depression12', 'depression13', 'depression14', 'depression15', 'depression16', 'depression17', 'depression18', 'depression19', 'depression20', 'maternal_depression_cesd2_complete', 'cesd2_pin', 'cesd2_c_formdt', 'cesd2_c_respondent', 'cesd2_c_otherresp']
+                        else: 
+                            fieldnames = ['\ufeffcrece_id','redcap_event_name'] + [header for header in headers if form_name in header]
                         csv_writer = csv.DictWriter(new_file,fieldnames=fieldnames)
                         csv_writer.writeheader()
                         for line in csv_reader:

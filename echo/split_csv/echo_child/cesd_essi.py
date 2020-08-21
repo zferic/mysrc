@@ -32,7 +32,7 @@ def generate_csvs():
             csv_reader = csv.DictReader(data)
             with open(visit+'/essi2' + '.csv','w') as new_file:
                 #fieldnames = ['crece_id','redcap_event_name'] + ['depression1', 'depression2', 'depression3', 'depression4', 'depression5', 'depression6', 'depression7', 'depression8', 'depression9', 'depression10', 'depression11', 'depression12', 'depression13', 'depression14', 'depression15', 'depression16', 'depression17', 'depression18', 'depression19', 'depression20', 'maternal_depression_cesd2_complete', 'cesd2_pin', 'cesd2_c_formdt', 'cesd2_c_respondent', 'cesd2_c_otherresp']
-                fieldnames = ['crece_id','redcap_event_name'] + ['support1', 'support2', 'support3', 'support4', 'support5', 'support6','essi2_pin',	'essi2_c_formdt','essi2_c_respondent','essi2_c_otherresp','essi2_complete']
+                fieldnames = ['crece_id','redcap_event_name'] + ['support1', 'support2', 'support3', 'support4', 'support5', 'support6','essi2_pin','essi2_c_formdt','essi2_c_respondent','essi2_c_otherresp','essi2_complete']
                 csv_writer = csv.DictWriter(new_file,fieldnames=fieldnames)
                 csv_writer.writeheader()
                 for line in csv_reader:
