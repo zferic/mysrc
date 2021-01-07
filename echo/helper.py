@@ -182,8 +182,10 @@ def export(export_form,final,visit):
                                     + str(month) \
                                     + str(day) +  \
                                     '~' + str(visit[:-1]) +'.csv', index = False, encoding='utf-8-sig')
-def clean_data(final):
+def clean_data(final,complete):
     print(final.shape)
+    #final = final.loc[final[complete.lower()] != str(0),:]
+    #print(final.shape)
     final = final.loc[final['formdt'] != 'NaT',:]
     #final = final.loc[~final[pin].isna(),:]
     final.replace('_6','-6',inplace=True)

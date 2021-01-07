@@ -24,11 +24,13 @@ def get_forms_in_dict():
     forms = dicts['Form Name'].unique().tolist()
     return forms[1:]
 def generate_csvs():
-    visits = ['V0','V3','PRO']
-    #visits = ['V1','V2']
+    #visits = ['V0','V3','PRO']
+    visits = ['V1','V2']
+    #visits = ['V0','V1','V2','V3','PRO']
+    df = pd.DataFrame(columns = ['form_name','visit'])
     for visit in visits:
         print(visit)
-        with open('Export'+visit+'ECHO mama_DATA_2020-08-12_ZRP.csv','r') as data:
+        with open('Export'+visit+'ECHO mama_DATA_2020-08-27_IAO.csv','r') as data:
             csv_reader = csv.DictReader(data)
             headers = next(csv_reader,None)
             completes = [x for x in headers if 'complete' in x]
@@ -37,18 +39,19 @@ def generate_csvs():
             forms = [x.rsplit('_',1)[0] for x in completes]
             print(abrv,forms,len(abrv),len(forms))
             for i,form_name in enumerate(abrv):
-                with open('Export'+visit+'ECHO mama_DATA_2020-08-12_ZRP.csv','r') as data:
+                with open('Export'+visit+'ECHO mama_DATA_2020-08-27_IAO.csv','r') as data:
                     csv_reader = csv.DictReader(data)
                     if form_name == 'mh_bf' or form_name == 'mh_bf_formdt':
                         continue
                     with open(visit + '/' + forms[i+1] + '.csv','w') as new_file:
-                        fieldnames = ['\ufeffprotect_id','redcap_event_name'] + [header for header in headers if form_name in header]
+                        fieldnames = ['protect_id','redcap_event_name'] + [header for header in headers if form_name in header]
                         csv_writer = csv.DictWriter(new_file,fieldnames=fieldnames)
                         csv_writer.writeheader()
                         for line in csv_reader:
                             mypart = {key:value for (key,value) in line.items() if key in fieldnames}
                             csv_writer.writerow(mypart)
-                print(form_name,len(fieldnames))
+                df = df.append({'form_name':recover_fname(form_name),'visit':visit},ignore_index=True)
+    #df.to_csv("form_list.csv")
 def recover_fname(x):
     forms = get_forms_in_dict()
     fname = [fname for fname in forms if x in fname]

@@ -44,14 +44,15 @@ def process_each_form(list_forms):
             final = final.rename(columns = {col2:'respondent'})
             final = final.rename(columns = {'EWCP_PARTICIPANTID':'participantid'})
             final.loc[:,col4] = final.loc[:,[col for col in final.columns if 'complete' in col][0]]
+            final.loc[:,abrv[form]+'_deidentified'] = 0
 
             final.columns=[x.lower() for x in final.columns]
-            final = helper.clean_data(final)
+            final = helper.clean_data(final,col4)
             #print(final.dtypes)
             if len(final.index) !=0:
                 final.loc[:,'ftr_mode'] = str(2)
                 final.loc[:,'ftr_setting'] = str(1)
-                final.loc[:,'ftr_deidentified'] =str(1)
+                final.loc[:,'ftr_deidentified'] =str(0)
                 helper.export(export_form,final,visit)
 def main():
     forms = ['household_composition_dem_hhc_p', 'income_assistance_financial_strain_dem_iafs_p', 'language_and_acculturation_dem_la_p', 'lifestyle_prg_life_pp', 'maternal_food_source_and_preparation_prg_mfsp', 'caregiver_occupation_and_employment_dem_occ_cg', 'promis_global_health_scale_cnp_pgh', 'promis_sleep_disturbance_4a_prg_psd4a', 'promis_sleeprelated_impairment_4a_prg_psri4a', 'perceived_stress_scale_cnp_pss10', 'the_everyday_discrimination_scale_cnp_weds', 'health_insurance_hic','child_birth_information_hhx_cbi','airways_questionnaire_cph_air_inf','child_physical_examination_cph_cape_i','child_global_health_cwb_cgb','escala_de_clima_social_familiar_hse_fes_coh','household_exposure_to_secondhand_smoke_bpe_heshs_c','household_composition_dem_hhc_c','income_assistance_financial_strain_dem_iafs_c','infant_feeding_practices_chb_ifp','medical_histoy_biological_family_hhx_mh_bf','medical_history_infancy_hhx_mh_i','parenting_scale_hse_pars','rothbart_very_short_form_ribqrvsf','maternal_depression_cesd2','essi2','adverse_childhood_experience_hse_ace_pr','child_physical_examination_cph_cape_c','child_food_source_and_preparation_chb_cfsp','dietary_screener_chb_dsq_pr','early_academic_competencies_srp_eac_pr','language_and_acculturation_dem_la_c','medical_hisoty_early_childhood_hhx_mh_ec','promis_physical_activity_8a_chb_ppa8a_pp','promis_sleep_disturbance_4a_csh_psd4a_pp','promis_sleeprelated_impairment_4a_csh_psri4a_pp','modified_checklist_for_autism_rmchatr','rothbar_early_childhood_recbqvsf']
