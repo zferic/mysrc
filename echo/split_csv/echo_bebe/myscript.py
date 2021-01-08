@@ -1,24 +1,29 @@
 import csv
 import sys
 import pandas as pd
-def check_with_dicts():
-    forms_dict = get_forms_in_dict()
-    with open('ECHOBEBEC3_DATA_2020-06-25_ZRP.csv','r') as data:
-        csv_reader = csv.DictReader(data)
-        headers = next(csv_reader,None)
-        completes = [x for x in headers if 'complete' in x]
-        forms = [x.rsplit('_',1)[0] for x in completes]
-        result = {'not in dictionary':[f for f in forms if f not in forms_dict]}
-        print(result)
+# def check_with_dicts():
+#     forms_dict = get_forms_in_dict()
+#     with open('ECHOBEBEC3_DATA_2020-06-25_ZRP.csv','r') as data:
+#         csv_reader = csv.DictReader(data)
+#         headers = next(csv_reader,None)
+#         completes = [x for x in headers if 'complete' in x]
+#         forms = [x.rsplit('_',1)[0] for x in completes]
+#         result = {'not in dictionary':[f for f in forms if f not in forms_dict]}
+#         print(result)
 
-def get_headers():
-    with open('ECHOBEBEC3_DATA_2020-06-25_ZRP.csv','r') as data:
-        csv_reader = csv.DictReader(data)
-        headers = next(csv_reader,None)
-        completes = [x for x in headers if 'complete' in x]
-        forms = [x.rsplit('_',1)[0] for x in completes]
-        #print(forms,len(forms))
-        return headers
+# def get_headers():
+#     with open('ECHOBEBEC3_DATA_2020-06-25_ZRP.csv','r') as data:
+#         csv_reader = csv.DictReader(data)
+#         headers = next(csv_reader,None)
+#         completes = [x for x in headers if 'complete' in x]
+#         forms = [x.rsplit('_',1)[0] for x in completes]
+#         #print(forms,len(forms))
+#         return headers
+def create_visit_dirs():
+    visits = ['C1','C2','C3']
+    for v in visits:
+        if not os.path.exists(v):
+            os.mkdir(v)
 def get_forms_in_dict():
     dicts = pd.read_csv('ECHOBEBE_DataDictionary_2020-06-25_ZRP.csv')
     forms = dicts['Form Name'].unique().tolist()
@@ -68,6 +73,7 @@ def recover_fname(x):
     return fname[0]
 
 def main():
+    create_visit_dirs()
     generate_csvs()
 
 if __name__=="__main__":

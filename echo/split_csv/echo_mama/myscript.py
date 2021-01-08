@@ -1,24 +1,29 @@
 import csv
 import sys
 import pandas as pd
-def check_with_dicts():
-    forms_dict = get_forms_in_dict()
-    with open('Export_ECHOMamaECHOPRO_2020-06-17_ZRP.csv','r') as data:
-        csv_reader = csv.DictReader(data)
-        headers = next(csv_reader,None)
-        completes = [x for x in headers if 'complete' in x]
-        forms = [x.rsplit('_',1)[0] for x in completes]
-        result = {'not in dictionary':[f for f in forms if f not in forms_dict]}
-        print(result)
+# def check_with_dicts():
+#     forms_dict = get_forms_in_dict()
+#     with open('Export_ECHOMamaECHOPRO_2020-06-17_ZRP.csv','r') as data:
+#         csv_reader = csv.DictReader(data)
+#         headers = next(csv_reader,None)
+#         completes = [x for x in headers if 'complete' in x]
+#         forms = [x.rsplit('_',1)[0] for x in completes]
+#         result = {'not in dictionary':[f for f in forms if f not in forms_dict]}
+#         print(result)
 
-def get_headers():
-    with open('Export_ECHOMamaECHOPRO_2020-06-17_ZRP.csv','r') as data:
-        csv_reader = csv.DictReader(data)
-        headers = next(csv_reader,None)
-        completes = [x for x in headers if 'complete' in x]
-        forms = [x.rsplit('_',1)[0] for x in completes]
-        print(forms,len(forms))
-        return headers
+# def get_headers():
+#     with open('Export_ECHOMamaECHOPRO_2020-06-17_ZRP.csv','r') as data:
+#         csv_reader = csv.DictReader(data)
+#         headers = next(csv_reader,None)
+#         completes = [x for x in headers if 'complete' in x]
+#         forms = [x.rsplit('_',1)[0] for x in completes]
+#         print(forms,len(forms))
+#         return headers
+def create_visit_dirs():
+    visits = ['V0','V1','V2','V3','PRO']
+    for v in visits:
+        if not os.path.exists(v):
+            os.mkdir(v)
 def get_forms_in_dict():
     dicts = pd.read_csv('ECHOMama_DataDictionary_2020-06-17_ZRP.csv')
     forms = dicts['Form Name'].unique().tolist()
@@ -59,6 +64,7 @@ def recover_fname(x):
 
 def main():
     #check_with_dicts()
+    create_visit_dirs()
     generate_csvs()
 
 if __name__=="__main__":

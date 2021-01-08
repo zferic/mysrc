@@ -1,38 +1,43 @@
 import csv
 import sys
 import pandas as pd
-def check_with_dicts():
-    forms_dict = get_forms_in_dict()
-    with open('ECHOEarlyChildhood_DataDictionary_2020-06-26_ZRP.csv','r') as data:
-        csv_reader = csv.DictReader(data)
-        headers = next(csv_reader,None)
-        completes = [x for x in headers if 'complete' in x]
-        forms = [x.rsplit('_',1)[0] for x in completes]
-        result = {'not in dictionary':[f for f in forms if f not in forms_dict]}
-        print(result)
+# def check_with_dicts():
+#     forms_dict = get_forms_in_dict()
+#     with open('ECHOEarlyChildhood_DataDictionary_2020-06-26_ZRP.csv','r') as data:
+#         csv_reader = csv.DictReader(data)
+#         headers = next(csv_reader,None)
+#         completes = [x for x in headers if 'complete' in x]
+#         forms = [x.rsplit('_',1)[0] for x in completes]
+#         result = {'not in dictionary':[f for f in forms if f not in forms_dict]}
+#         print(result)
 
-def get_headers():
-    pairs = {}
-    visits = ['C4','C5','C6','C7','C8','C9','C10','C11','C13']
-    for visit in visits:
-        with open('Export_ECHOEarlyChildhood-'+visit+'_DATA_2020-06-26_ZRP.csv','r') as data:
-            csv_reader = csv.DictReader(data)
-            headers = next(csv_reader,None)
-            completes = [x for x in headers if 'complete' in x]
-            formdts =[x for x in headers if 'formdt' in x]
-            abrv = [x.rsplit('_',1)[0] for x in formdts]
-            abrv = [x for x in abrv if 'asq' not in x]
-            forms = [x.rsplit('_',1)[0] for x in completes]
-            forms = [x for x in forms if 'asq' not in x]
+# def get_headers():
+#     pairs = {}
+#     visits = ['C4','C5','C6','C7','C8','C9','C10','C11','C13']
+#     for visit in visits:
+#         with open('Export_ECHOEarlyChildhood-'+visit+'_DATA_2020-06-26_ZRP.csv','r') as data:
+#             csv_reader = csv.DictReader(data)
+#             headers = next(csv_reader,None)
+#             completes = [x for x in headers if 'complete' in x]
+#             formdts =[x for x in headers if 'formdt' in x]
+#             abrv = [x.rsplit('_',1)[0] for x in formdts]
+#             abrv = [x for x in abrv if 'asq' not in x]
+#             forms = [x.rsplit('_',1)[0] for x in completes]
+#             forms = [x for x in forms if 'asq' not in x]
 
-            for x in abrv:
-                if x == 'cesd2_c' or 'essi2_c':
-                    x = x[:4]
-                y = [form for form in forms if x in form][0]
-                pairs[x]=y
-    print(pairs)
+#             for x in abrv:
+#                 if x == 'cesd2_c' or 'essi2_c':
+#                     x = x[:4]
+#                 y = [form for form in forms if x in form][0]
+#                 pairs[x]=y
+#     print(pairs)
 
         #return headers
+def create_visit_dirs():
+    visits = ['C4','C5','C6','C7','C8','C9','C10','C11','C12','C13']
+    for v in visits:
+        if not os.path.exists(v):
+            os.mkdir(v)
 def get_forms_in_dict():
     dicts = pd.read_csv('ECHOEarlyChildhood_DataDictionary_2020-06-26_ZRP.csv')
     forms = dicts['Form Name'].unique().tolist()
@@ -83,6 +88,7 @@ def recover_fname(x):
 
 def main():
     #check_with_dicts()
+    create_visit_dirs()
     generate_csvs()
     #get_headers()
     #get_forms_in_dict()
