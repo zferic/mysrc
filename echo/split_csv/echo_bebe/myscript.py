@@ -26,7 +26,7 @@ def create_visit_dirs():
         if not os.path.exists(v):
             os.mkdir(v)
 def get_forms_in_dict():
-    dicts = pd.read_csv('ECHOBEBE_DataDictionary_2020-06-25_ZRP.csv')
+    dicts = pd.read_csv('dictionary/ECHOBEBE_DataDictionary_2021-01-19_IAO.csv')
     forms = dicts['Form Name'].unique().tolist()
     return forms[1:]
 def generate_csvs_C1C3():
@@ -36,7 +36,7 @@ def generate_csvs_C1C3():
     df = pd.DataFrame(columns = ['form_name','visit'])
     for visit in visits:
         print(visit)
-        with open('Export'+visit+'_DATA_2020-08-27_IAO.csv','r') as data:
+        with open('rawexport/Export'+visit+'_DATA_2021-01-22_IAO.csv','r') as data:
             csv_reader = csv.DictReader(data)
             headers = next(csv_reader,None)
             completes = [x for x in headers if 'complete' in x]
@@ -45,13 +45,22 @@ def generate_csvs_C1C3():
             forms = [x.rsplit('_',1)[0] for x in completes]
             print(abrv,forms,len(abrv),len(forms))
             for i,form_name in enumerate(abrv):
-                with open('Export'+visit+'_DATA_2020-08-27_IAO.csv','r') as data:
+                with open('rawexport/Export'+visit+'_DATA_2021-01-22_IAO.csv','r') as data:
                     csv_reader = csv.DictReader(data)
                     with open(visit + '/' + forms[i] + '.csv','w') as new_file:
                         if form_name == 'essi2_c':
                             fieldnames = ['\ufeffcrece_id','redcap_event_name'] + ['support1', 'support2', 'support3', 'support4', 'support5', 'support6','essi2_pin','essi2_c_formdt','essi2_c_respondent','essi2_c_otherresp','essi2_complete']
                         elif form_name == 'cesd2_c':
                             fieldnames = ['\ufeffcrece_id','redcap_event_name'] + ['depression1', 'depression2', 'depression3', 'depression4', 'depression5', 'depression6', 'depression7', 'depression8', 'depression9', 'depression10', 'depression11', 'depression12', 'depression13', 'depression14', 'depression15', 'depression16', 'depression17', 'depression18', 'depression19', 'depression20', 'maternal_depression_cesd2_complete', 'cesd2_pin', 'cesd2_c_formdt', 'cesd2_c_respondent', 'cesd2_c_otherresp']
+                        #covid form
+ 
+                        elif 'c19_cpr' in form_name:
+                            fieldnames = ['\ufeffcrece_id','redcap_event_name'] + [header for header in headers if form_name in header \
+                                                                                             or 'covid19_child_parent_report_complete' in header]
+                        #ASQ FORM
+                        elif 'asq' in form_name:
+                            fieldnames = ['\ufeffcrece_id','redcap_event_name'] + [header for header in headers if 'asq' in header]
+                        
                         else:    
                             fieldnames = ['\ufeffcrece_id','redcap_event_name'] + [header for header in headers if form_name in header]
                         csv_writer = csv.DictWriter(new_file,fieldnames=fieldnames)
@@ -59,8 +68,8 @@ def generate_csvs_C1C3():
                         for line in csv_reader:
                             mypart = {key:value for (key,value) in line.items() if key in fieldnames}
                             csv_writer.writerow(mypart)
-                if form_name[:3] != 'asq':
-                    df = df.append({'form_name':recover_fname(form_name),'visit':visit},ignore_index=True)
+                #if form_name[:3] != 'asq':
+                #    df = df.append({'form_name':recover_fname(form_name),'visit':visit},ignore_index=True)
         #df.to_csv("form_list.csv")
 def generate_csvs_C2():
     visits = ['C2']
@@ -68,7 +77,7 @@ def generate_csvs_C2():
     df = pd.DataFrame(columns = ['form_name','visit'])
     for visit in visits:
         print(visit)
-        with open('Export'+visit+'_DATA_2020-08-27_IAO.csv','r') as data:
+        with open('rawexport/Export'+visit+'_DATA_2021-01-22_IAO.csv','r') as data:
             csv_reader = csv.DictReader(data)
             headers = next(csv_reader,None)
             completes = [x for x in headers if 'complete' in x]
@@ -77,22 +86,28 @@ def generate_csvs_C2():
             forms = [x.rsplit('_',1)[0] for x in completes]
             print(abrv,forms,len(abrv),len(forms))
             for i,form_name in enumerate(abrv):
-                with open('Export'+visit+'_DATA_2020-08-27_IAO.csv','r') as data:
+                with open('rawexport/Export'+visit+'_DATA_2021-01-22_IAO.csv','r') as data:
                     csv_reader = csv.DictReader(data)
                     with open(visit + '/' + forms[i] + '.csv','w') as new_file:
                         if form_name == 'essi2_c':
-                            fieldnames = ['crece_id','redcap_event_name'] + ['support1', 'support2', 'support3', 'support4', 'support5', 'support6','essi2_pin','essi2_c_formdt','essi2_c_respondent','essi2_c_otherresp','essi2_complete']
+                            fieldnames = ['\ufeffcrece_id','redcap_event_name'] + ['support1', 'support2', 'support3', 'support4', 'support5', 'support6','essi2_pin','essi2_c_formdt','essi2_c_respondent','essi2_c_otherresp','essi2_complete']
                         elif form_name == 'cesd2_c':
-                            fieldnames = ['crece_id','redcap_event_name'] + ['depression1', 'depression2', 'depression3', 'depression4', 'depression5', 'depression6', 'depression7', 'depression8', 'depression9', 'depression10', 'depression11', 'depression12', 'depression13', 'depression14', 'depression15', 'depression16', 'depression17', 'depression18', 'depression19', 'depression20', 'maternal_depression_cesd2_complete', 'cesd2_pin', 'cesd2_c_formdt', 'cesd2_c_respondent', 'cesd2_c_otherresp']
+                            fieldnames = ['\ufeffcrece_id','redcap_event_name'] + ['depression1', 'depression2', 'depression3', 'depression4', 'depression5', 'depression6', 'depression7', 'depression8', 'depression9', 'depression10', 'depression11', 'depression12', 'depression13', 'depression14', 'depression15', 'depression16', 'depression17', 'depression18', 'depression19', 'depression20', 'maternal_depression_cesd2_complete', 'cesd2_pin', 'cesd2_c_formdt', 'cesd2_c_respondent', 'cesd2_c_otherresp']
+                        elif 'c19_cpr' in form_name:
+                            fieldnames = ['\ufeffcrece_id','redcap_event_name'] + [header for header in headers if form_name in header \
+                                                                                                or 'covid19_child_parent_report_complete' in header]
+                        elif 'asq' in form_name:
+                            fieldnames = ['\ufeffcrece_id','redcap_event_name'] + [header for header in headers if 'asq' in header]
+
                         else:    
-                            fieldnames = ['crece_id','redcap_event_name'] + [header for header in headers if form_name in header]
+                            fieldnames = ['\ufeffcrece_id','redcap_event_name'] + [header for header in headers if form_name in header]
                         csv_writer = csv.DictWriter(new_file,fieldnames=fieldnames)
                         csv_writer.writeheader()
                         for line in csv_reader:
                             mypart = {key:value for (key,value) in line.items() if key in fieldnames}
                             csv_writer.writerow(mypart)
-                if form_name[:3] != 'asq':
-                    df = df.append({'form_name':recover_fname(form_name),'visit':visit},ignore_index=True)
+                #if form_name[:3] != 'asq':
+                #    df = df.append({'form_name':recover_fname(form_name),'visit':visit},ignore_index=True)
     #df.to_csv("form_list.csv")
 def recover_fname(x):
     forms = get_forms_in_dict()

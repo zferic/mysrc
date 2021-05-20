@@ -6,6 +6,8 @@ import os
 def merge_forms_from_visits(forms):
     for form in forms:
         print("handling folder " + form)
+        if form == '.DS_Store':
+            continue
         filenames = listdir('dataexport/' + form + '/pervisit')
         if filenames:
             print(filenames[0].split('~')[0])

@@ -3,9 +3,9 @@ import helper
 
 echo = pd.read_csv('echo_dictionaries/Ess_HHx_MH_BF_2020_0521_110531.csv')
 V0 = pd.read_csv(
-    'split_csv/echo_mama/ExportV0ECHO mama_DATA_2020-08-12_ZRP.csv')
+    'split_csv/echo_mama/rawexport/ExportV0ECHO mama_DATA_2021-01-21_IAO.csv')
 Pro = pd.read_csv(
-    'split_csv/echo_mama/ExportPROECHO mama_DATA_2020-08-12_ZRP.csv')
+    'split_csv/echo_mama/rawexport/ExportPROECHO mama_DATA_2021-01-21_IAO.csv')
 
 addition = ['mh_bf_2s', 'mh_bf_2s_fam___1',
             'mh_bf_2s_fam___2', 'mh_bf_2s_fam___3']
@@ -13,7 +13,7 @@ for index, row in V0.iterrows():
     if V0.at[index, 'hypothyroidism'] == 1 or V0.at[index, 'hyperthyroidism'] == 1:
         V0.at[index, 'mh_bf_2s'] = str(1)
     elif V0.at[index, 'hypothyroidism'] == 2 and V0.at[index, 'hyperthyroidism'] == 2:
-        V0.at[index, 'mh_bf_2s'] = str(0)
+        V0.at[index, 'mh_bf_2s'] = str(2)
 for index, row in V0.iterrows():
     if V0.at[index, 'hypothyroidism2___1'] == 1 or V0.at[index, 'hyperthyroidism2___1'] == 1:
         V0.at[index, 'mh_bf_2s_fam___1'] = str(1)
@@ -35,7 +35,7 @@ for index, row in Pro.iterrows():
     if Pro.at[index, 'hypothyroidism'] == 1 or Pro.at[index, 'hyperthyroidism'] == 1:
         Pro.at[index, 'mh_bf_2s'] = str(1)
     elif Pro.at[index, 'hypothyroidism'] == 2 and Pro.at[index, 'hyperthyroidism'] == 2:
-        Pro.at[index, 'mh_bf_2s'] = str(0)
+        Pro.at[index, 'mh_bf_2s'] = str(2)
 for index, row in Pro.iterrows():
     if Pro.at[index, 'hypothyroidism2___1'] == 1 or Pro.at[index, 'hyperthyroidism2___1'] == 1:
         Pro.at[index, 'mh_bf_2s_fam___1'] = str(1)
@@ -51,6 +51,7 @@ for index, row in Pro.iterrows():
         Pro.at[index, 'mh_bf_2s_fam___3'] = str(1)
     elif Pro.at[index, 'hypothyroidism2___3'] == 0 and Pro.at[index, 'hyperthyroidism2___3'] == 0:
         Pro.at[index, 'mh_bf_2s_fam___3'] = str(0)
+
 Pro = Pro[['protect_id']+addition]
 #Pro['protect_id'] = Pro['protect_id'].astype(object)
 
@@ -91,7 +92,7 @@ def mh_bf_process():
                 final.at[index, 'ess_hhx_mh_bf_complete'] = str(2)
         final.columns = [x.lower() for x in final.columns]
         print(final.dtypes)
-        final = helper.clean_data(final)
+        final = helper.clean_data(final,0)
         helper.export('Ess_HHx_MH_BF_2020_0521_110531.csv', final, visit)
 
 

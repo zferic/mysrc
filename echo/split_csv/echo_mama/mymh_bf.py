@@ -5,7 +5,7 @@ def generate_csvs():
     visits = ['V0','PRO']
     for visit in visits:
         print(visit)
-        with open('Export'+visit+'ECHO mama_DATA_2020-08-12_ZRP.csv','r') as data:
+        with open('rawexport/Export'+visit+'ECHO mama_DATA_2021-01-21_IAO.csv','r') as data:
             csv_reader = csv.DictReader(data)
             headers = next(csv_reader,None)
             with open(visit + '/medical_history_biological_family_hhx_mh_bf_pro.csv','w') as new_file:

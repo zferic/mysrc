@@ -26,8 +26,9 @@ def create_visit_dirs():
         if not os.path.exists(v):
             os.mkdir(v)
 def get_forms_in_dict():
-    dicts = pd.read_csv('ECHOMama_DataDictionary_2020-06-17_ZRP.csv')
+    dicts = pd.read_csv('dictionary/ECHOMama_DataDictionary_2021-01-19_IAO.csv')
     forms = dicts['Form Name'].unique().tolist()
+    print(forms)
     return forms[1:]
 def generate_csvs_V1V2():
     visits = ['V1','V2']
@@ -35,35 +36,47 @@ def generate_csvs_V1V2():
     df = pd.DataFrame(columns = ['form_name','visit'])
     for visit in visits:
         print(visit)
-        with open('Export'+visit+'ECHO mama_DATA_2020-08-27_IAO.csv','r') as data:
+        with open('rawexport/Export'+visit+'ECHO mama_DATA_2021-01-21_IAO.csv','r') as data:
             csv_reader = csv.DictReader(data)
             headers = next(csv_reader,None)
             completes = [x for x in headers if 'complete' in x]
             formdts =[x for x in headers if 'formdt' in x]
             abrv = [x.rsplit('_',1)[0] for x in formdts]
             forms = [x.rsplit('_',1)[0] for x in completes]
+
+            
             print(abrv,forms,len(abrv),len(forms))
             for i,form_name in enumerate(abrv):
-                with open('Export'+visit+'ECHO mama_DATA_2020-08-27_IAO.csv','r') as data:
+                with open('rawexport/Export'+visit+'ECHO mama_DATA_2021-01-21_IAO.csv','r') as data:
                     csv_reader = csv.DictReader(data)
                     if form_name == 'mh_bf' or form_name == 'mh_bf_formdt':
                         continue
-                    with open(visit + '/' + forms[i+1] + '.csv','w') as new_file:
-                        fieldnames = ['protect_id','redcap_event_name'] + [header for header in headers if form_name in header]
+                    with open(visit + '/' + forms[i] + '.csv','w') as new_file:
+
+                        if form_name == 'c19_apv':
+                            print('here*********************')
+                            fieldnames = ['protect_id','redcap_event_name'] + [header for header in headers if form_name in header \
+                                                                                                or header == 'covid19_adult_primary_complete' ]
+                            print([header for header in headers if form_name in header \
+                                                                                                or header == 'covid19_adult_primary_complete' ])                                                              
+                        else:
+                            fieldnames = ['protect_id','redcap_event_name'] + [header for header in headers if form_name in header]
+                        
                         csv_writer = csv.DictWriter(new_file,fieldnames=fieldnames)
                         csv_writer.writeheader()
                         for line in csv_reader:
                             mypart = {key:value for (key,value) in line.items() if key in fieldnames}
                             csv_writer.writerow(mypart)
-                df = df.append({'form_name':recover_fname(form_name),'visit':visit},ignore_index=True)
+                #df = df.append({'form_name':recover_fname(form_name),'visit':visit},ignore_index=True)
     #df.to_csv("form_list.csv")
+
 def generate_csvs_V0V3PRO():
     visits = ['V0','V3','PRO']
     #visits = ['V0','V1','V2','V3','PRO']
     df = pd.DataFrame(columns = ['form_name','visit'])
     for visit in visits:
         print(visit)
-        with open('Export'+visit+'ECHO mama_DATA_2020-08-27_IAO.csv','r') as data:
+        with open('rawexport/Export'+visit+'ECHO mama_DATA_2021-01-21_IAO.csv','r') as data:
             csv_reader = csv.DictReader(data)
             headers = next(csv_reader,None)
             completes = [x for x in headers if 'complete' in x]
@@ -72,21 +85,32 @@ def generate_csvs_V0V3PRO():
             forms = [x.rsplit('_',1)[0] for x in completes]
             print(abrv,forms,len(abrv),len(forms))
             for i,form_name in enumerate(abrv):
-                with open('Export'+visit+'ECHO mama_DATA_2020-08-27_IAO.csv','r') as data:
+                with open('rawexport/Export'+visit+'ECHO mama_DATA_2021-01-21_IAO.csv','r') as data:
                     csv_reader = csv.DictReader(data)
                     if form_name == 'mh_bf' or form_name == 'mh_bf_formdt':
                         continue
-                    with open(visit + '/' + forms[i+1] + '.csv','w') as new_file:
-                        fieldnames = ['\ufeffprotect_id','redcap_event_name'] + [header for header in headers if form_name in header]
+
+                    print(form_name)
+                    with open(visit + '/' + forms[i] + '.csv','w') as new_file:
+                        if form_name == 'c19_apv':
+                            print('here')
+                            fieldnames = ['\ufeffprotect_id','redcap_event_name'] + [header for header in headers if form_name in header \
+                                                                                                or 'covid19_adult_primary_complete' in header]
+                        else:
+                            fieldnames = ['\ufeffprotect_id','redcap_event_name'] + [header for header in headers if form_name in header]
+                        
                         csv_writer = csv.DictWriter(new_file,fieldnames=fieldnames)
                         csv_writer.writeheader()
                         for line in csv_reader:
                             mypart = {key:value for (key,value) in line.items() if key in fieldnames}
                             csv_writer.writerow(mypart)
-                df = df.append({'form_name':recover_fname(form_name),'visit':visit},ignore_index=True)
+                #df = df.append({'form_name':recover_fname(form_name),'visit':visit},ignore_index=True)
+
 def recover_fname(x):
+    print(x)
     forms = get_forms_in_dict()
     fname = [fname for fname in forms if x in fname]
+    print(fname)
     return fname[0]
 
 def main():
