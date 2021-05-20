@@ -1,10 +1,9 @@
 import pandas as pd
 import helper
-
+from datetime import datetime
 import os
 
 asq_files = os.listdir('asqraw')
-
 
 mapping = {'ECHOBebe_ASQ12_DATA_2021-01-27.csv':'Ess_CNH_ASQ_12_2021_0129_161854.csv',            
         'ECHOEarlyChildhood_ASQ18DATA_2021-01-27.csv' : 'Ess_CNH_ASQ_18_2021_0129_161901.csv',   
@@ -16,31 +15,24 @@ mapping = {'ECHOBebe_ASQ12_DATA_2021-01-27.csv':'Ess_CNH_ASQ_12_2021_0129_161854
         'ECHOEarlyChildhood_ASQ36DATA_2021-01-27.csv': 'Ess_CNH_ASQ_36_2021_0129_161913.csv',
         'ECHOEarlyChildhood_ASQ60DATA_2021-01-27.csv':'Ess_CNH_ASQ_60_2021_0129_164115.csv'}
 
-
 def runasq():
 
     for file in asq_files:
 
-        print(file)
         dict_name = mapping[file]
-        print('here')
 
-        print(dict_name)
         ed= pd.read_csv('echo_dictionaries/' + dict_name, encoding='utf-8-sig')
         formname = ed['Uploaded Form ID'].unique()[0]
-
 
         need_cols = ed.loc[~ed['Uploaded Variable Name'].isna(),'Uploaded Variable Name'].unique().tolist()
 
         data = pd.read_csv('asqraw/' + file, dtype=object, encoding='latin-1')
         # print(visit)
         data['crece_id'] = data['crece_id']
-
         #data = data.merge(df[i], on='protect_id')
         # print(data)
         head = helper.process_head('C')
         head['COHORTPARTICIPANTID'] = head['COHORTPARTICIPANTID']
-
         final = head.merge(
             data, left_on='COHORTPARTICIPANTID', right_on='crece_id')
 
@@ -62,8 +54,6 @@ def runasq():
         final = final.rename(columns={respondent: 'respondent'})
         final = final.rename(columns={'EWCP_PARTICIPANTID': 'participantid'})
         final = final.rename(columns={otherresp: 'otherresp'})
-
-
         final.columns = [x.lower() for x in final.columns]
 
         if '48' in formname:
@@ -72,9 +62,7 @@ def runasq():
         final[need_cols]
         
         final = helper.clean_data(final,0)
-        
-        
-        from datetime import datetime
+    
         datetime.now().date()
 
         protocolid = final['protocolid'].unique()[0]
@@ -99,8 +87,6 @@ def runasq():
             print('error')
             pass
 
-
-            
         print('WRITING********************************')
         print(final.shape)
         print('dataexport/' + formname + '/' + \
@@ -113,9 +99,6 @@ def runasq():
                                         + str(month) \
                                         + str(day)
                                         )
-        
-
-
         final[need_cols].fillna('').to_csv('asqsubmission/' + \
                                         str(protocolid) + '_' + \
                                         str(cohortid) + '_' + \
@@ -126,9 +109,7 @@ def runasq():
                                         + str(day) +'.csv', index = False, encoding='utf-8-sig')
 
 def main():
-    
     runasq()
 
-    
 if __name__ == "__main__":
     main()
